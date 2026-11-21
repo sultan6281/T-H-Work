@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14243a">
+  <meta name="description" content="T&H — تطبيق بسيط لتسجيل ساعات العمل وحساب الأجور باليورو">
+  <title>T&H | حاسبة ساعات العمل</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <style>
+    :root{--navy:#14243a;--navy2:#203752;--gold:#d6a94f;--bg:#f3f5f8;--card:#fff;--ink:#172334;--muted:#687789;--line:#e5eaf0;--green:#16845b;--red:#c34444;--shadow:0 10px 28px rgba(22,38,58,.07)}
+    *{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;font-family:Tahoma,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .topbar{background:linear-gradient(120deg,var(--navy),#243c59);color:white;padding:14px 20px;box-shadow:0 4px 18px #14243a22;position:sticky;top:0;z-index:5}
+    .top-inner{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}.brand img{width:48px;height:48px}.brand-name{font-size:21px;font-weight:800;letter-spacing:.4px}.brand-sub{font-size:12px;color:#d5deea;margin-top:3px}
+    nav{display:flex;gap:8px;flex-wrap:wrap}nav button{border:1px solid #ffffff30;background:transparent;color:white;padding:9px 14px;border-radius:10px}nav button.active,nav button:hover{background:#ffffff1c;border-color:#ffffff70}
+    main{max-width:1180px;margin:26px auto;padding:0 18px 44px}.page-title{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:18px}.page-title h1{font-size:25px;margin:0 0 5px}.muted{color:var(--muted);font-size:13px}
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.stat{padding:19px}.stat .label{font-size:13px;color:var(--muted)}.stat .value{font-size:27px;font-weight:800;margin-top:10px;color:var(--navy);direction:ltr;text-align:right}.stat.gold .value{color:#a87819}
+    .panel{padding:20px;margin-top:16px}.panel h2{font-size:18px;margin:0 0 16px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.panel-head h2{margin:0}
+    .form-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;color:var(--muted);font-weight:700}.field input,.field textarea,.field select,.toolbar input,.toolbar select{width:100%;border:1px solid #d8e0e9;border-radius:10px;padding:11px 10px;background:white;color:var(--ink);min-width:0;outline:none}.field input:focus,.field textarea:focus,.toolbar input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #d6a94f25}
+    .span2{grid-column:span 2}.actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:700}.primary{background:var(--navy);color:white}.primary:hover{background:var(--navy2)}.gold-btn{background:var(--gold);color:#241b0b}.light{background:#edf1f5;color:var(--navy)}.danger{background:#fff0f0;color:var(--red)}.small{padding:7px 10px;font-size:12px}
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}.toolbar .field{min-width:150px}.toolbar label{font-size:12px;color:var(--muted)}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;min-width:720px;background:white}th,td{text-align:right;padding:13px 12px;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap}th{background:#f8fafc;color:#58677a;font-weight:700}tr:last-child td{border-bottom:0}.num{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}.empty{text-align:center;color:var(--muted);padding:30px}
+    .notice{padding:12px 14px;border-radius:10px;background:#fff8e8;color:#775516;font-size:13px;margin-top:12px}.hidden{display:none!important}.report-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.month-total{font-size:30px;font-weight:800;color:var(--navy);margin:8px 0}.bar-row{display:grid;grid-template-columns:90px 1fr 65px;gap:10px;align-items:center;margin:13px 0;font-size:13px}.bar{height:9px;background:#edf1f5;border-radius:20px;overflow:hidden}.bar span{display:block;height:100%;background:var(--gold);border-radius:20px}
+    .toast{position:fixed;bottom:20px;left:20px;z-index:20;background:var(--navy);color:white;padding:12px 17px;border-radius:11px;box-shadow:var(--shadow);max-width:calc(100vw - 40px)}footer{text-align:center;color:#8491a0;font-size:12px;padding:18px}
+    @media(max-width:850px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.span2{grid-column:span 2}.report-grid{grid-template-columns:1fr}}
+    @media(max-width:520px){.topbar{padding:11px 13px}.brand img{width:42px;height:42px}.brand-name{font-size:18px}nav{width:100%}nav button{flex:1;padding:9px 7px;font-size:12px}main{padding:0 12px 30px;margin:18px auto}.page-title h1{font-size:21px}.cards{gap:9px}.stat{padding:14px}.stat .value{font-size:22px}.panel{padding:14px}.form-grid{grid-template-columns:1fr 1fr;gap:9px}.field input{padding:10px 8px}.span2{grid-column:span 2}.btn{padding:10px 12px;font-size:13px}.toolbar>*{flex:1 1 130px}}
+    @media print{body{background:white}.topbar,nav,.no-print,footer{display:none!important}main{max-width:none;margin:0;padding:0}.panel,.card{box-shadow:none;break-inside:avoid}.hidden{display:none!important}.cards{grid-template-columns:repeat(4,1fr)}}
+  </style>
+</head>
+<body>
+<header class="topbar no-print">
+  <div class="top-inner">
+    <div class="brand"><img src="logo.svg" alt="شعار T&H"><div><div class="brand-name">T&amp;H</div><div class="brand-sub">إدارة ساعات العمل والأجور</div></div></div>
+    <nav>
+      <button class="active" data-page="dashboard">لوحة التحكم</button>
+      <button data-page="shifts">سجل الدوام</button>
+      <button data-page="reports">التقارير</button>
+    </nav>
+  </div>
+</header>
+<main>
+  <section id="dashboard" class="page">
+    <div class="page-title"><div><h1>مرحباً بك في T&amp;H</h1><div class="muted">تابع ساعات عملك واحسب أجرك بسهولة</div></div><button class="btn gold-btn no-print" onclick="go('shifts')">＋ إضافة دوام</button></div>
+    <div class="cards">
+      <div class="card stat"><div class="label">إجمالي ساعات العمل</div><div class="value" id="totalHours">0:00</div></div>
+      <div class="card stat gold"><div class="label">إجمالي الراتب</div><div class="value" id="totalSalary">€0.00</div></div>
+      <div class="card stat"><div class="label">أيام العمل</div><div class="value" id="totalDays">0</div></div>
+      <div class="card stat"><div class="label">مجموع الاستراحات</div><div class="value" id="totalBreaks">0 د</div></div>
+    </div>
+    <div class="report-grid">
+      <div class="panel"><h2>ملخص هذا الشهر</h2><div class="muted" id="currentMonth"></div><div class="month-total" id="monthHours">0:00 ساعة</div><div class="muted">الراتب المتوقع: <strong id="monthSalary">€0.00</strong></div></div>
+      <div class="panel"><h2>إعداد أجر الساعة</h2><div class="field" style="max-width:260px"><label for="rate">الأجر باليورو لكل ساعة (€)</label><input id="rate" type="number" min="0" step="0.01" value="10"></div><div class="muted" style="margin-top:9px">يتم تحديث جميع الحسابات تلقائياً عند تغيير الأجر.</div></div>
+    </div>
+    <div class="panel"><h2>آخر الورديات</h2><div id="recentTable"></div></div>
+  </section>
+
+  <section id="shifts" class="page hidden">
+    <div class="page-title"><div><h1>سجل الدوام</h1><div class="muted">أضف وردية واحدة أو أدخل عدة ورديات دفعة واحدة</div></div></div>
+    <div class="panel">
+      <div class="panel-head"><h2 id="formTitle">إضافة وردية عمل</h2><button class="btn light small" id="cancelEdit" onclick="resetForm()" style="display:none">إلغاء التعديل</button></div>
+      <div class="form-grid">
+        <div class="field"><label for="date">التاريخ</label><input type="date" id="date"></div>
+        <div class="field"><label for="start">وقت البداية</label><input type="time" id="start"></div>
+        <div class="field"><label for="end">وقت النهاية</label><input type="time" id="end"></div>
+        <div class="field"><label for="break">الاستراحة بالدقائق</label><input type="number" id="break" min="0" value="0"></div>
+        <div class="field span2"><label for="notes">ملاحظات (اختياري)</label><input type="text" id="notes" placeholder="مثلاً: دوام صباحي"></div>
+        <div class="actions span2"><button class="btn primary" id="saveShift" onclick="saveShift()">حفظ الوردية</button><button class="btn light" onclick="go('bulk')">إدخال عدة ورديات</button></div>
+      </div>
+      <div class="notice">إذا كان وقت النهاية بعد منتصف الليل، سيحسب التطبيق الوردية تلقائياً لليوم التالي. يتم خصم الاستراحة من ساعات العمل.</div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>كل الورديات</h2><div class="muted" id="shiftCount">0 وردية</div></div>
+      <div class="toolbar no-print">
+        <div class="field"><label>من تاريخ</label><input type="date" id="filterFrom"></div>
+        <div class="field"><label>إلى تاريخ</label><input type="date" id="filterTo"></div>
+        <button class="btn light" onclick="clearFilters()">إزالة التصفية</button>
+        <button class="btn light" onclick="exportCSV()">تصدير Excel / CSV</button>
+        <button class="btn light" onclick="window.print()">طباعة / PDF</button>
+      </div>
+      <div id="shiftTable"></div>
+    </div>
+  </section>
+
+  <section id="bulk" class="page hidden">
+    <div class="page-title"><div><h1>إدخال عدة ورديات</h1><div class="muted">أدخل كل وردية في سطر مستقل، ثم احفظها دفعة واحدة</div></div><button class="btn light no-print" onclick="go('shifts')">العودة لسجل الدوام</button></div>
+    <div class="panel">
+      <h2>طريقة الإدخال</h2>
+      <div class="muted" style="margin-bottom:12px">اكتب البيانات بهذا الترتيب، وافصل بينها بفاصلة: التاريخ، وقت البداية، وقت النهاية، الاستراحة بالدقائق، الملاحظات (اختياري).</div>
+      <div class="notice" style="margin:0 0 14px">مثال: 2026-11-01, 08:00, 16:00, 30, دوام صباحي</div>
+      <div class="field"><label for="bulkInput">الورديات (كل وردية في سطر)</label><textarea id="bulkInput" rows="9" placeholder="2026-11-01, 08:00, 16:00, 30&#10;2026-11-03, 09:00, 17:00, 0&#10;2026-11-05, 10:00, 15:00, 15" style="width:100%;border:1px solid #d8e0e9;border-radius:10px;padding:12px;resize:vertical"></textarea></div>
+      <div class="actions" style="margin-top:13px"><button class="btn primary" onclick="saveBulk()">حفظ كل الورديات</button><button class="btn light" onclick="document.getElementById('bulkInput').value=''">مسح النص</button></div>
+      <div id="bulkErrors" class="notice hidden"></div>
+    </div>
+  </section>
+
+  <section id="reports" class="page hidden">
+    <div class="page-title"><div><h1>التقارير</h1><div class="muted">راجع مجموع ساعاتك وأجرك خلال فترة تختارها</div></div><button class="btn light no-print" onclick="window.print()">طباعة / حفظ PDF</button></div>
+    <div class="panel">
+      <div class="toolbar no-print">
+        <div class="field"><label>الشهر</label><input type="month" id="reportMonth"></div>
+        <button class="btn primary" onclick="renderReports()">عرض التقرير</button>
+      </div>
+      <div class="cards" style="margin-bottom:0">
+        <div class="card stat"><div class="label">ساعات الشهر</div><div class="value" id="repHours">0:00</div></div>
+        <div class="card stat gold"><div class="label">راتب الشهر</div><div class="value" id="repSalary">€0.00</div></div>
+        <div class="card stat"><div class="label">عدد الورديات</div><div class="value" id="repShifts">0</div></div>
+        <div class="card stat"><div class="label">أيام العمل</div><div class="value" id="repDays">0</div></div>
+      </div>
+      <div id="reportTable" style="margin-top:18px"></div>
+    </div>
+  </section>
+</main>
+<footer>T&amp;H · حاسبة ساعات العمل والأجور · تُحفظ بياناتك على هذا الجهاز</footer>
+<div id="toast" class="toast hidden" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
